@@ -1,5 +1,7 @@
 package com.javainuse.config;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,33 +13,35 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class EmployeeSecurityConfiguration extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	DataSource dataSource;
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
-    }
+	// Enable jdbc authentication
+	@Autowired
+	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+		auth.jdbcAuthentication().dataSource(dataSource);
+	}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/welcome")
-            .hasAnyRole("USER", "ADMIN").antMatchers("/getEmployees").hasAnyRole("USER", "ADMIN")
-            .antMatchers("/addNewEmployee").hasAnyRole("ADMIN").anyRequest().authenticated().and().formLogin()
-            .loginPage("/login").permitAll().and().logout().permitAll();
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/resources/**");
+	}
 
-        http.csrf().disable();
-    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/welcome").hasAnyRole("USER", "ADMIN")
+				.antMatchers("/getEmployees").hasAnyRole("USER", "ADMIN").antMatchers("/addNewEmployee")
+				.hasAnyRole("ADMIN").anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
+				.and().logout().permitAll();
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-        authenticationMgr
-        .inMemoryAuthentication()
-        .withUser("employee")
-        .password("employee")
-        .authorities("ROLE_USER")
-        .and()
-        .withUser("javainuse")
-        .password("javainuse")
-        .authorities("ROLE_USER", "ROLE_ADMIN");
-    }
+		http.csrf().disable();
+	}
+
+//	@Autowired
+//	public void configureGlobal(AuthenticationManagerBuilder authenticationMgr) throws Exception {
+//		authenticationMgr.inMemoryAuthentication().withUser("employee").password("employee").authorities("ROLE_USER")
+//				.and().withUser("javainuse").password("javainuse").authorities("ROLE_USER", "ROLE_ADMIN");
+//	}
 
 }
