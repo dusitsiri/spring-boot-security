@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class EmployeeController {
 
 	@RequestMapping(value = "/addNewEmployee", method = RequestMethod.POST)
 	public ModelAndView processRequest(@ModelAttribute("emp") Employee emp) {
-		
+
 		employeeService.insertEmployee(emp);
 		List<Employee> employees = employeeService.getAllEmployees();
 		ModelAndView model = new ModelAndView("getEmployees");
@@ -45,6 +46,17 @@ public class EmployeeController {
 		ModelAndView model = new ModelAndView("getEmployees");
 		model.addObject("employees", employees);
 		return model;
+	}
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(Model model, String error, String logout) {
+		if (error != null)
+			model.addAttribute("errorMsg", "Your username and password are invalid.");
+
+		if (logout != null)
+			model.addAttribute("msg", "You have been logged out successfully.");
+
+		return "login";
 	}
 
 }
