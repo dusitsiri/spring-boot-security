@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,9 @@ public class EmployeeController {
 	
 	@Autowired
 	JdbcUserDetailsManager jdbcUserDetailsManager;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@RequestMapping("/welcome")
 	public ModelAndView firstPage() {
@@ -45,7 +49,9 @@ public class EmployeeController {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		
-		User user = new User(userRegistrationObject.getUsername(), userRegistrationObject.getPassword(), authorities);
+		String encodedPassword = bCryptPasswordEncoder.encode(userRegistrationObject.getPassword());
+		
+		User user = new User(userRegistrationObject.getUsername(), encodedPassword, authorities);
 		jdbcUserDetailsManager.createUser(user);
 		return new ModelAndView("redirect:/welcome");
 	}
