@@ -37,6 +37,7 @@
         </div>
 
     </form>
+    <a href="/register">Register New User</a>
 
 </div>
 <!-- /container -->

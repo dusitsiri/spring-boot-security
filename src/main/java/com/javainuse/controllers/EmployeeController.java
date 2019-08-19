@@ -1,8 +1,13 @@
 package com.javainuse.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.javainuse.model.Employee;
+import com.javainuse.model.UserRegistration;
 import com.javainuse.service.EmployeeService;
 
 @Controller
@@ -19,10 +25,29 @@ public class EmployeeController {
 
 	@Autowired
 	EmployeeService employeeService;
+	
+	@Autowired
+	JdbcUserDetailsManager jdbcUserDetailsManager;
 
 	@RequestMapping("/welcome")
 	public ModelAndView firstPage() {
 		return new ModelAndView("welcome");
+	}
+	
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public ModelAndView register() {
+		return new ModelAndView("registration", "user", new UserRegistration());
+	}
+	
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public ModelAndView processRegister(@ModelAttribute("user") UserRegistration userRegistrationObject) {
+		// authorities to be granted 
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		
+		User user = new User(userRegistrationObject.getUsername(), userRegistrationObject.getPassword(), authorities);
+		jdbcUserDetailsManager.createUser(user);
+		return new ModelAndView("redirect:/welcome");
 	}
 
 	@RequestMapping(value = "/addNewEmployee", method = RequestMethod.GET)
