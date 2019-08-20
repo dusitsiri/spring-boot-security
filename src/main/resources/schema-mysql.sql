@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS employee;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS authorities;
+DROP TABLE IF EXISTS users;
+
 
 CREATE TABLE employee (
   empId VARCHAR(10) NOT NULL,
@@ -23,4 +24,4 @@ insert into users(username, password, enabled)values('javainuse','javainuse',tru
 insert into authorities(username,authority)values('javainuse','ROLE_ADMIN');
 
 insert into users(username, password, enabled)values('employee','employee',true);
-insert into authorities(username,authority)values('javainuse','ROLE_USER');
+insert into authorities(username,authority)values('employee','ROLE_USER');
