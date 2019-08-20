@@ -1,4 +1,5 @@
 <%@page session="false"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>  
 <html>
 <head>
 <title>Welcome</title>
@@ -7,5 +8,6 @@
 	<jsp:include page="menu.jsp" />
 	      
 	<h3 style="color: red;">Hello Admin</h3>
+	<sec:csrfInput />
 </body>
 </html>
