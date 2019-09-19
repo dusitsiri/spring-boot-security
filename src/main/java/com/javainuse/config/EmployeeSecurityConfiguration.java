@@ -52,7 +52,7 @@ public class EmployeeSecurityConfiguration extends WebSecurityConfigurerAdapter 
 				.and().formLogin().loginPage("/login").permitAll()
 				.and().logout().permitAll();
 
-		http.csrf().disable();
+//		http.csrf().disable();
 	}
 
 //	@Autowired
