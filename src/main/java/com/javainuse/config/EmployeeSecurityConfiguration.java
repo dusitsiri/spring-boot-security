@@ -22,7 +22,7 @@ public class EmployeeSecurityConfiguration extends WebSecurityConfigurerAdapter 
         http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/welcome")
             .hasAnyRole("USER", "ADMIN").antMatchers("/getEmployees").hasAnyRole("USER", "ADMIN")
             .antMatchers("/addNewEmployee").hasAnyRole("ADMIN").anyRequest().authenticated().and().formLogin()
-            .permitAll().and().logout().permitAll();
+            .loginPage("/login").permitAll().and().logout().permitAll();
 
         http.csrf().disable();
     }
