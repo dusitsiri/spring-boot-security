@@ -2,6 +2,8 @@ package com.javainuse.config;
 
 import javax.sql.DataSource;
 
+import com.javainuse.handler.EmployeeAuthenticationSuccessHandler;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,9 @@ public class EmployeeSecurityConfiguration extends WebSecurityConfigurerAdapter 
 		return new BCryptPasswordEncoder();
 	}
 
+	@Autowired
+	private EmployeeAuthenticationSuccessHandler successHandler;
+
 	// Enable jdbc authentication
 	@Autowired
 	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
@@ -46,10 +51,18 @@ public class EmployeeSecurityConfiguration extends WebSecurityConfigurerAdapter 
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+<<<<<<< HEAD
 		http.authorizeRequests().antMatchers("/register").permitAll().antMatchers("/welcome")
 				.hasAnyRole("USER", "ADMIN").antMatchers("/getEmployees").hasAnyRole("USER", "ADMIN")
 				.antMatchers("/addNewEmployee").hasAnyRole("ADMIN").anyRequest().authenticated()
 				.and().formLogin().loginPage("/login").permitAll()
+=======
+		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/welcome").hasAnyRole("USER", "ADMIN")
+				.antMatchers("/getEmployees").hasAnyRole("USER", "ADMIN").antMatchers("/addNewEmployee")
+				.hasAnyRole("ADMIN").anyRequest().authenticated()
+				.and().formLogin().successHandler(successHandler)
+				.loginPage("/login").permitAll()
+>>>>>>> a6c6b2f5d3b1001bb8f62b742ea34ab0be2e21d2
 				.and().logout().permitAll();
 
 //		http.csrf().disable();
